@@ -575,8 +575,11 @@ To see the raw characters the scanner reads, try
    `NUM(1) '+' NUM(2) ';'` and `EOF`. Count the lines you added: LAB09
    does this in flex with one line.
 4. **Break it: forget to give back.** Comment out the `ungetc()` call.
-   Predict the tokens for `12+3;`, then run it. Run `meson test` and
-   read which test fails and what the numbers in the message mean.
+   Predict the tokens for `12+3;`, then run it. Rebuild, run
+   `meson test -C _build --print-errorlogs`, and read which test fails
+   and what the numbers in the message mean. (`--print-errorlogs`
+   prints a failing test's output in the terminal; without it, the
+   message is only in `_build/meson-logs/testlog.txt`.)
 5. **Draw it: decimal fractions.** Extend the automaton from the
    theory corner so that `12.5` is one `NUM`. Decide whether `12.` and
    `.5` are numbers. Then follow `1.x` through your drawing: what must

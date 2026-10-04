@@ -3,8 +3,8 @@
 This file is the master plan for a hands-on course on flex and bison.
 Claude Code reads it before generating every lab. It fixes the ground rules,
 the running example, the coding style and the content of all 47 labs (the
-cap is 50). Labs are generated one at a time, on request, after Karl
-approves this plan.
+cap is 50). Labs are generated one at a time, on request, after the
+developer approves this plan.
 
 Contents
 
@@ -24,12 +24,13 @@ Contents
 
 ## 1. Purpose
 
-Karl is a C developer and Oracle DBA who builds GTK 4 applications with
-GObject and is learning Meson in a separate course. He has always been
-fascinated by flex and bison but has no background in compiler
-construction.
+The developer this course is written for is a C programmer and Oracle
+DBA who builds GTK 4 applications with GObject and is learning Meson in
+a separate course. They have always been fascinated by flex and bison
+but have no background in compiler construction.
 
-The goal: after LAB47 Karl is comfortable with flex and bison. He can:
+The goal: after LAB47 the developer is comfortable with flex and bison,
+and can:
 
 - design a scanner and a grammar for a small language from scratch;
 - read and fix conflicts by reading bison's reports, without guessing;
@@ -50,44 +51,44 @@ tools and are never the subject of a lab.
 
 ## 2. Ground rules
 
-These rules come from Karl. They are not negotiable.
+These rules come from the developer. They are not negotiable.
 
 1. **flex and bison first.** Every lab exists to teach flex or bison (or
    the theory needed to use them well). Interpreter work (evaluation,
    scopes, values) is kept as small as possible and never becomes the
    topic of a lab.
 2. **First principles, slowly.** LAB01-LAB03 build a scanner and a parser
-   by hand, so Karl sees what the tools automate. Difficulty rises
-   gently: 2-3 concepts per lab early on, at most 4 later.
+   by hand, so the developer sees what the tools automate. Difficulty
+   rises gently: 2-3 concepts per lab early on, at most 4 later.
 3. **Cumulative and self-contained.** `LABnn` is a full copy of `LAB(nn-1)`
    plus the changes planned for `LABnn`. Every lab configures, builds and
    tests on its own; nothing refers to another lab directory.
 4. **Never remove a language feature.** pebble features are never removed.
    Scaffolding that a tool replaces *is* removed (the hand-written scanner
-   in LAB04, the hand-written parser in LAB15), and `LESSON_GOALS.md`
-   says what replaced what.
-5. **Explain every piece of syntax.** Karl is a beginner with these
-   tools. The first time any flex or bison construct appears (a pattern
-   operator, a `%` directive, `yytext`, `$$`, `@1`, a macro, an option),
-   the lab explains what it means, what it does to the generated code,
-   and why it is written that way. Every new or changed line of a `.l`
-   or `.y` file is covered in "The new code, line by line" (section
-   4.2). Nothing in a scanner or grammar is left unexplained, and
-   nothing is used before it has been explained.
-6. **Theory: just enough, from zero.** Karl has no compiler background.
-   Define every term in plain language the first time it is used
-   (token, lexeme, grammar, nonterminal, derivation, shift, reduce,
-   state, lookahead, conflict...), always with a concrete pebble
-   example and, where it helps, an ASCII picture. Introduce theory when
+   in LAB04, the hand-written parser in LAB15), and the lab's
+   `LESSON_GOALS_LABnn.md` says what replaced what.
+5. **Explain every piece of syntax.** The developer is a beginner with
+   these tools. The first time any flex or bison construct appears (a
+   pattern operator, a `%` directive, `yytext`, `$$`, `@1`, a macro, an
+   option), the lab explains what it means, what it does to the
+   generated code, and why it is written that way. Every new or changed
+   line of a `.l` or `.y` file is covered in "The new code, line by
+   line" (section 4.2). Nothing in a scanner or grammar is left
+   unexplained, and nothing is used before it has been explained.
+6. **Theory: just enough, from zero.** The developer has no compiler
+   background. Define every term in plain language the first time it
+   is used (token, lexeme, grammar, nonterminal, derivation, shift,
+   reduce, state, lookahead, conflict...), always with a concrete
+   pebble example and, where it helps, an ASCII picture. Introduce theory when
    a lab needs it: tokens, grammars, derivations, ambiguity,
    regex-to-automaton intuition, how LR parsing shifts and reduces,
    conflicts, LALR versus IELR, GLR. No proofs, no FIRST/FOLLOW tables,
    no hand-built automata beyond small sketches.
 7. **Meaningful labs, not build exercises.** Meson is plumbing. It is
    explained once (LAB01, LAB04, LAB15) and never takes more than a few
-   lines of a `LESSON_GOALS.md` after that. Every lab asks Karl to
-   *write* flex or bison code himself, not only to run, inspect or
-   break the lab's code.
+   lines of a `LESSON_GOALS_LABnn.md` after that. Every lab asks the
+   developer to *write* flex or bison code themselves, not only to run,
+   inspect or break the lab's code.
 8. **C, with GLib helpers.** Scanners, grammars and their actions are C.
    Support code may use GLib (`GHashTable`, `GString`, `GPtrArray`,
    `g_autofree`, GTest). Keep grammar actions short: one call into a
@@ -102,6 +103,9 @@ These rules come from Karl. They are not negotiable.
     Markdown, including this file.
 12. **Style** as in section 6: GTK-like C layout, 1TBS braces, 4-space
     indentation, and fixed layouts for `.l` and `.y` files.
+13. **No personal names.** The repository is public. Files refer to the
+    person taking the course as "the developer" (lessons say "you"),
+    never by name, and use "they" for pronouns.
 
 
 ## 3. Repository layout
@@ -111,11 +115,11 @@ These rules come from Karl. They are not negotiable.
 |-- CLAUDE.md            this plan
 |-- .gitignore           created together with LAB01 (contains `_build/`)
 |-- LAB01/
-|   |-- LESSON_GOALS.md  what this lab teaches, exercises, answers
-|   |-- REFERENCE.md     every construct and term learned so far
+|   |-- LESSON_GOALS_LAB01.md  what this lab teaches, exercises, answers
+|   |-- REFERENCE.md           every construct and term learned so far
 |   |-- meson.build
-|   |-- src/             pebble sources (.c, .h, .l, .y)
-|   |-- tests/           GTest programs and test scripts
+|   |-- src/                   pebble sources (.c, .h, .l, .y)
+|   |-- tests/                 GTest programs and test scripts
 |   `-- examples/        *.pb programs used in the walkthrough
 |-- LAB02/
 |-- ...
@@ -125,7 +129,8 @@ These rules come from Karl. They are not negotiable.
 - Lab directories are zero-padded (`LAB01`...`LAB47`).
 - Each lab builds into its own `_build/` directory.
 - Generated files (`scanner.c`, `parser.c`, `parser.h`, `parser.output`)
-  live only in `_build/src/`. Karl is encouraged to read them.
+  live only in `_build/src/`. The developer is encouraged to read
+  them.
 - Compare consecutive labs with `git diff --no-index LAB16 LAB17`.
 - `REFERENCE.md` is cumulative. Each lab copies it forward and adds
   what it introduced, so the latest lab always holds the complete
@@ -134,30 +139,49 @@ These rules come from Karl. They are not negotiable.
 
 ## 4. How to generate a lab
 
-Karl will ask for one lab at a time, e.g. "Generate LAB07 per CLAUDE.md".
+The developer asks for one lab at a time, e.g. "Generate LAB07 per
+CLAUDE.md".
 
 ### 4.1 Procedure
 
 1. Read this file, the plan entry for `LABnn` (section 8), and the previous
-   lab's `LESSON_GOALS.md`.
-2. `cp -a LAB(nn-1) LABnn`, then delete `LABnn/_build`.
+   lab's `LESSON_GOALS_LAB(nn-1).md`.
+2. `cp -a LAB(nn-1) LABnn`, then delete `LABnn/_build` and the copied
+   `LABnn/LESSON_GOALS_LAB(nn-1).md`.
 3. Bump the project version to `1.nn.0` (no leading zero).
 4. Make the planned changes, and only those. If the plan turns out to be
    wrong (tool behaviour, a better minimal design), choose the simplest
    correct fix, update section 8, and record it in section 12.
-5. Write `LABnn/LESSON_GOALS.md` from the template in 4.2, and extend
+5. Write `LABnn/LESSON_GOALS_LABnn.md` from the template in 4.2, and extend
    `LABnn/REFERENCE.md` (4.3).
 6. Verify against the definition of done (4.4).
 7. Report: concepts covered, files changed, any deviation from the plan.
 
-### 4.2 LESSON_GOALS.md template
+### 4.2 LESSON_GOALS_LABnn.md template
+
+Each lab's lesson file is named after the lab, with the two-digit
+number: `LAB07/LESSON_GOALS_LAB07.md`.
 
 Under 1000 lines is typical, not a cap: a lesson is as long as its
 content needs, and is never trimmed just to save lines. The line-by-line
 section makes lessons longer than in the Meson course, on purpose.
-Write for a reader who knows C
-very well and has never studied compilers: define every term, explain
-every symbol, prefer a small example over an abstract sentence.
+Write for a reader who knows C very well and has never studied
+compilers: define every term, explain every symbol, prefer a small
+example over an abstract sentence.
+
+The developer wants clear, detailed explanations, not summaries. This
+matters most in "The idea", the theory corner and the line-by-line
+section:
+
+- Explain each point in full sentences. Prefer several plain paragraphs
+  to one dense one; never compress an explanation to save space.
+- Work through a concrete pebble input step by step: a derivation, a
+  trace or a table with one row per moment. Then say what to notice in
+  it, point by point.
+- When a sentence makes a claim ("the parser decides late"), show the
+  moment in the example where it happens.
+- Check every trace and table against the real program before writing
+  it down.
 
 ```markdown
 # LABnn -- <Title>
@@ -174,7 +198,7 @@ Prerequisites: tools this lab needs beyond earlier labs (if any).
 
 Plain-language explanation of the problem this lab solves and the
 idea behind the solution, *before* any code (10-30 lines). Start
-from what Karl already knows. Use a concrete pebble input.
+from what the developer already knows. Use a concrete pebble input.
 
 ## New words
 
@@ -219,9 +243,11 @@ helps, e.g. the `case` an action turns into.
 
 Copy-paste commands from a clean lab directory, with abridged
 expected output. Build commands stay short; the point is pebble's
-behaviour, the tokens, the traces and the reports:
+behaviour, the tokens, the traces and the reports. Tests always run
+as `meson test -C _build --print-errorlogs`, here and in exercises:
 
     meson setup _build && meson compile -C _build
+    meson test -C _build --print-errorlogs
     ./_build/src/pebble --tokens examples/hello.pb
 
 ## Exercises
@@ -260,8 +286,8 @@ the questions.
 
 A cumulative, alphabetical reference that grows with the course. Each
 lab copies the previous `REFERENCE.md` and adds its own entries, so
-Karl never has to search old labs to remember what `yyless` or `%prec`
-means. Three sections:
+the developer never has to search old labs to remember what `yyless`
+or `%prec` means. Three sections:
 
 ```markdown
 # pebble course reference (as of LABnn)
@@ -304,12 +330,13 @@ meson test -C _build --print-errorlogs
   flex/bison options (`nounput`, `noinput`, ...) over `-Wno-...` flags.
 - From LAB29 on, `meson test` also passes in a build configured with
   `-Db_sanitize=address,undefined`.
-- Every exercise in `LESSON_GOALS.md` has been tried, where feasible.
+- Every exercise in `LESSON_GOALS_LABnn.md` has been tried, where
+  feasible.
 - Every new or changed line of a `.l` or `.y` file is explained in "The
   new code, line by line". Every term used is defined in this lab or an
   earlier one. Every new construct and term is in `REFERENCE.md`.
-- At least one exercise asks Karl to write flex or bison code, and the
-  answer contains that code. (LAB01-LAB03 come before the tools: there,
+- At least one exercise asks the developer to write flex or bison code,
+  and the answer contains that code. (LAB01-LAB03 come before the tools: there,
   "write it" means hand-written scanner or parser code in C.)
 - Each line in `*.c *.h *.l *.y *.build *.md *.pb` is 80 columns or
   fewer.
@@ -341,23 +368,25 @@ meson test -C _build --print-errorlogs
   to `GLIB_VERSION_2_90` (one `add_project_arguments()` line).
 - **flex 2.6.4** (the current release; OL9 ships it).
 - **bison 3.8.2** (the current release). OL9 ships bison 3.7.4, which
-  lacks `%header`, `--html` and location printing in traces, so Karl
-  installs 3.8.2 in his usual prefix. Every grammar starts with
-  `%require "3.8.2"`.
+  lacks `%header`, `--html` and location printing in traces, so the
+  developer installs 3.8.2 in their usual prefix. Every grammar starts
+  with `%require "3.8.2"`.
 - Optional tools, with the lab that first uses them:
+  - gdb (LAB02; the call stack of a hand-written parser)
   - Graphviz `dot` (LAB17; pictures of the LR automaton)
   - valgrind (LAB14), ASan/UBSan through Meson (LAB29)
   - xsltproc (LAB30; `bison --html`)
   - gcovr (LAB42; grammar coverage), clang (LAB42; optional fuzzing)
 - For the reading labs (LAB45-LAB47): a PostgreSQL source checkout
-  (Karl works on a PostgreSQL migration), and optionally jq and Mesa.
+  (the developer works on a PostgreSQL migration), and optionally jq
+  and Mesa.
 
 
 ## 6. Coding style
 
 ### 6.1 C
 
-The same as Karl's Meson course:
+The same as the developer's Meson course:
 
 - Layout follows GTK 4 and Valent; braces follow the One True Brace Style
   (1TBS); 4-space indentation, never tabs; 80 columns.
@@ -510,8 +539,8 @@ expr
 ### 6.4 meson.build
 
 The Meson side stays small and identical in shape across labs. Meson
-itself is taught in Karl's other course; here it is explained once
-(LAB04 for flex, LAB15 for bison) and then reused.
+itself is taught in the developer's other course; here it is
+explained once (LAB04 for flex, LAB15 for bison) and then reused.
 
 ```meson
 glib_dep = dependency('glib-2.0', version: '>= 2.90')
@@ -633,7 +662,7 @@ lib.pb:3:9: error: unexpected ')', expecting number or identifier
 
 ```
 LAB47/
-|-- LESSON_GOALS.md  REFERENCE.md
+|-- LESSON_GOALS_LAB47.md  REFERENCE.md
 |-- meson.build  meson.options  meson.format
 |-- examples/        *.pb, config.json
 |-- src/
@@ -708,7 +737,7 @@ LAB47/
 
 Each entry lists:
 
-- **Concepts** -- what LESSON_GOALS.md teaches, in order.
+- **Concepts** -- what `LESSON_GOALS_LABnn.md` teaches, in order.
 - **Theory** -- the theory corner, when there is one.
 - **Example** -- the changes to pebble.
 - **Exercises** -- the minimum set (more are welcome).
@@ -772,6 +801,15 @@ Theory
 Example
 - `src/parser.c`: `program: statement*`, `statement: expr ';'`; each
   statement prints its value.
+- The grammar is written in bison notation (`program : %empty | program
+  statement ;`, left-recursive `expr` and `term`); the functions turn
+  the left-recursive rules into `while` loops, and LAB03 explains why.
+- `int pb_parse (void)` returns 0, or 1 after a syntax error (like
+  `yyparse()`; `setjmp`/`longjmp` inside). The message is bison's
+  default wording, `pebble: syntax error`. Values print with `%.10g`,
+  as in bison's `calc` example.
+- `tests/test-parser.c`: table-driven cases, each run in a child process
+  (`g_test_trap_subprocess()`) to check stdout.
 
 Exercises
 - Draw both parse trees of `1+2*3` for the ambiguous grammar.
@@ -1829,8 +1867,8 @@ Concepts
 
 Example
 - No new feature. A guided reading. `flex -b -v` is run on
-  `src/backend/parser/scan.l` directly; Karl compares its options with
-  pebble's.
+  `src/backend/parser/scan.l` directly; the developer compares its
+  options with pebble's.
 
 Exercises
 - Explain how `$tag$ ... $tag$` dollar quoting is scanned.
@@ -1872,7 +1910,8 @@ Example
   print match (x) { 1 => "one", 2, 3 => "few", _ => "many" };
   ```
 
-  The lab gives Karl a checklist; the reference solution is in the lab.
+  The lab gives the developer a checklist; the reference solution is in
+  the lab.
 
 Exercises
 - Build the feature from the checklist before reading the solution.
@@ -1977,11 +2016,32 @@ Each item below gets at most a mention:
 
 Record every deviation from this plan here, newest first:
 
-- 2026-10-03 (LAB01): per Karl, tests use Meson's TAP protocol
+- 2026-10-04: per the developer, whose repository is public, the plan
+  no longer names them; it says "the developer" throughout. New ground
+  rule 13 keeps names out of all files.
+
+- 2026-10-04: per the developer, each lab's lesson file is named after
+  its lab, `LESSON_GOALS_LABnn.md`, instead of `LESSON_GOALS.md`. LAB01
+  and LAB02 were renamed; step 2 of 4.1 now also deletes the copied
+  lesson.
+
+- 2026-10-04 (LAB02): per the developer, section 4.2 now asks for clear,
+  detailed explanations worked through on a concrete example. LAB02's
+  sections on ambiguity and top-down parsing were expanded accordingly.
+
+- 2026-10-03 (LAB02): filled in details the plan left open (now listed
+  under LAB02's Example): bison-notation grammar with loops in the C
+  functions, `pb_parse()` returning 0/1 like `yyparse()`, the
+  `pebble: syntax error` message, `%.10g` output, and a new
+  `tests/test-parser.c`. Test sources must not pass a zero-length buffer
+  to `fmemopen()`: under ASan it fails with `EINVAL`. gdb joins the
+  optional tools in section 5 (one optional exercise).
+
+- 2026-10-03 (LAB01): per the developer, tests use Meson's TAP protocol
   (`protocol: 'tap'`); added to section 6.4.
 
-- 2026-10-03 (LAB01): per Karl, the 250-450 line figure in 4.2 is a
-  typical length, not a cap; lessons are not trimmed to fit it.
+- 2026-10-03 (LAB01): per the developer, the 250-450 line figure in 4.2
+  is a typical length, not a cap; lessons are not trimmed to fit it.
 - 2026-10-03 (LAB01): filled in details the plan left open. Unknown
   characters become `TOK_UNDEF` (257), so the "add `%`" exercise has
   something to change and the token numbering below 258 is explained
@@ -1992,15 +2052,15 @@ Record every deviation from this plan here, newest first:
   `TOK_YYUNDEF`. Section 4.4 now says how "write it" applies to
   LAB01-LAB03, which come before flex and bison.
 
-- 2026-10-02 (before any lab existed): per Karl, GLib 2.90 is the
-  minimum (with matching GLib version guards), and bison is pinned to
-  3.8.2 in `%require` and `find_program()`.
-- 2026-10-02 (before any lab existed): per Karl, the old LAB16 ("Inside
-  the LR parser") was split into LAB16 (shift and reduce by hand,
+- 2026-10-02 (before any lab existed): per the developer, GLib 2.90 is
+  the minimum (with matching GLib version guards), and bison is pinned
+  to 3.8.2 in `%require` and `find_program()`.
+- 2026-10-02 (before any lab existed): per the developer, the old LAB16
+  ("Inside the LR parser") was split into LAB16 (shift and reduce by hand,
   traces) and LAB17 (items, states and the `.output` report; adds the
   `%` operator). Later labs moved up by one: 47 labs.
-- 2026-10-02 (before any lab existed): per Karl, who is new to the
-  tools and to the theory, every lab must explain each new line of
+- 2026-10-02 (before any lab existed): per the developer, who is new to
+  the tools and to the theory, every lab must explain each new line of
   `.l`/`.y` code and define each new term (rules 5-7); the template
   gained "The idea", "New words", "The new code, line by line", "New
   syntax" and "Check your understanding"; each lab now carries a
