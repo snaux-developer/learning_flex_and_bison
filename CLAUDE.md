@@ -642,7 +642,7 @@ Command line (with the lab that adds each option):
 pebble [OPTION...] [FILE...]
   --tokens     print the token stream instead of running      (LAB01)
   -e CODE      run CODE instead of a file                     (LAB12)
-  --trace      bison parse trace                              (LAB16)
+  --trace      parser trace (LAB03); bison's own trace from   (LAB16)
   --ast        print the syntax tree instead of running       (LAB22)
   --check      parse only; report all syntax errors           (LAB28)
   (no FILE on a terminal: interactive REPL)                   (LAB38)
@@ -686,7 +686,7 @@ LAB47/
 |-----|------------------------------------------------------------|
 | 01  | hand-written scanner, `--tokens`                           |
 | 02  | hand-written recursive-descent calculator                  |
-| 03  | `^`, unary minus, hand parser error messages               |
+| 03  | `^`, unary minus, hand parser error messages, `--trace`    |
 | 04  | flex scanner replaces the hand-written one                 |
 | 05  | comparison operators                                       |
 | 06  | floating-point and hex numbers                             |
@@ -699,7 +699,7 @@ LAB47/
 | 13  | UTF-8 identifiers and strings                              |
 | 14  | scanner unit tests, clean scanner shutdown                 |
 | 15  | bison parser replaces the hand-written one                 |
-| 16  | `--trace`                                                  |
+| 16  | `--trace` becomes bison's trace                            |
 | 17  | modulo operator `%`                                        |
 | 18  | precedence declarations replace the layered grammar        |
 | 19  | typed values: strings and numbers                          |
@@ -835,6 +835,13 @@ Example
 - Error messages such as `expected ')'`.
 - A `--trace` option that prints function entry and exit: the call tree
   *is* the parse tree.
+- As built: levels `expr`, `term`, `unary : power | '-' unary`,
+  `power : factor | factor '^' unary`, `factor`; `pow()` needs `libm`
+  (`m_dep`). Messages read `pebble: error: unexpected X, expecting Y`
+  (the course's lasting format; LAB08 replaces `pebble:` with the
+  location). The trace prints `rule {`, used tokens, and `} = value` to
+  stderr. `pb_append_token()` in `scanner.c` formats tokens for both
+  `--tokens` and `--trace`.
 
 Exercises
 - Write `expr: expr '+' term` literally as a recursive function; watch
@@ -2015,6 +2022,12 @@ Each item below gets at most a mention:
 ## 12. Plan change log
 
 Record every deviation from this plan here, newest first:
+
+- 2026-10-04 (LAB03): `--trace` arrives in LAB03 for the hand-written
+  parser, as section 8 planned, so sections 7.2 and 7.4 now say so; LAB16
+  turns it into bison's trace. Error messages use bison's wording,
+  "unexpected X, expecting Y", rather than the plan's "expected ')'".
+  Details are under LAB03's Example in section 8.
 
 - 2026-10-04: per the developer, whose repository is public, the plan
   no longer names them; it says "the developer" throughout. New ground
